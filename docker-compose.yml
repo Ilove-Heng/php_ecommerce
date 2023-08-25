@@ -1,0 +1,45 @@
+version: "2"
+services:
+  webserver:
+    image: mydemophpimage
+    ports:
+      - "8080:80"
+      - "443:443"
+    volumes:
+      - ./app:/var/www/html
+    environment:
+      MYSQL_DB_CONNECTION: test
+      MYSQL_DB_NAME: ecommerceweb
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
+      SITE_URL: http://localhost
+    networks:
+      - test
+
+  mysql:
+    image: mysql:5.7
+    volumes: 
+        - ./sql:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: 123
+      MYSQL_DATABASE: ecommerceweb
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
+    networks:
+      - test
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: 123
+      PMA_ARBITRARY: 1
+    networks:
+      - test
+
+networks:
+  test:
+    external: true
